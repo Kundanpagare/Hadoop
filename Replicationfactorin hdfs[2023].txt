@@ -1,0 +1,50 @@
+***************HDFS-COMMAND***************
+
+[root@master ~]# hdfs dfs -mkdir /user/mydir
+[root@master ~]# hdfs dfs -ls /user
+[root@master ~]# sudo -u hdfs hadoop fs -chown root /user/mydir-----------------permission to root
+[root@master ~]# hdfs dfs -put /root/f1.txt /user/mydir
+[root@master ~]# hdfs dfs -get /root/f1.txt /user/mydir
+
+************Replication*****************
+
+[root@master ~]# chsh -s /bin/bash  hdfs-------------change shell root to hdfs
+[root@master ~]# su - hdfs
+[hdfs@master ~]$ hdfs dfs -mkdir /user/mydir1
+[hdfs@master ~]$ vim file1.txt
+[hdfs@master ~]$ vim file2.txt
+[hdfs@master ~]$ vim file3.txt
+[hdfs@master ~]$ hdfs dfs -put file1.txt file2.txt file3.txt /user/mydir1
+
+
+[hdfs@master ~]$ hdfs dfs -ls /user/mydir1
+Found 3 items
+-rw-r--r--   3 hdfs supergroup         19 2023-07-04 08:35 /user/mydir1/file1.txt
+-rw-r--r--   3 hdfs supergroup         15 2023-07-04 08:35 /user/mydir1/file2.txt
+-rw-r--r--   3 hdfs supergroup         16 2023-07-04 08:35 /user/mydir1/file3.txt
+
+
+[hdfs@master ~]$ hdfs dfs -setrep -w 5 /user/mydir1----------------(w)set replication factor 5 for files.
+Replication 5 set: /user/mydir1/file1.txt
+Replication 5 set: /user/mydir1/file2.txt
+Replication 5 set: /user/mydir1/file3.txt
+iting for /user/mydir1/file1.txt ...............^C[hdfs@master ~]$ 
+
+[hdfs@master ~]$ hdfs dfs -setrep -R 5 /user/mydir1----------------(R->Reccursive)set Replication factor 5 for directories
+Replication 5 set: /user/mydir1/file1.txt
+Replication 5 set: /user/mydir1/file2.txt
+Replication 5 set: /user/mydir1/file3.txt
+
+
+[hdfs@master ~]$ hdfs fsck /user/mydir1--------------------Check Replication Factor Details
+Connecting to namenode via http://master:9870/fsck?ugi=hdfs&path=%2Fuser%2Fmydir1
+FSCK started by hdfs (auth:SIMPLE) from /192.168.20.175 for path /user/mydir1 at Tue Jul 05 08:40:47 IST 2023
+
+***********************Replication factor is set to 5**************************
+
+[hdfs@master ~]$ hdfs dfs -ls /user/mydir1
+Found 3 items
+-rw-r--r--   5 hdfs supergroup         19 2023-07-04 08:35 /user/mydir1/file1.txt
+-rw-r--r--   5 hdfs supergroup         15 2023-07-04 08:35 /user/mydir1/file2.txt
+-rw-r--r--   5 hdfs supergroup         16 2023-07-04 08:35 /user/mydir1/file3.txt
+[hdfs@master ~]$ 
