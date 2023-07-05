@@ -1,0 +1,46 @@
+***********************REGULAR TABLES IN HIVE*************************
+
+
+[root@master ~]# hive
+0: jdbc:hive2://master:2181/default> create table hpc (id int, name string);
+0: jdbc:hive2://master:2181/default> insert into hpc values (1, "akshay"),(2, "shiv");
+
++---------+-----------+
+| hpc.id  | hpc.name  |
++---------+-----------+
+| 1       | akshay    |
+| 2       | shiv      |
++---------+-----------+
+
+************************MANAGED TABLES IN HIVE**************************
+
+0: jdbc:hive2://master:2181/default> create managed table hpc1 (id int, name string, city string);
+0: jdbc:hive2://master:2181/default> insert into hpc1 values (1, "akshay", "pune"),(2, "shiv", "sambhajinagar");
+
++----------+------------+----------------+
+| hpc1.id  | hpc1.name  |   hpc1.city    |
++----------+------------+----------------+
+| 1        | akshay     | pune           |
+| 2        | shiv       | sambhajinagar  |
++----------+------------+----------------+
+
+*************************EXTERNAL TABLE IN HIVE********************************
+____________Cmd on Root_______________
+  #vim cdac.txt;
+  #hdfs dfs -mkdir institute;
+  #hdfs dfs -ls /user
+  #sudo -u hdfs hadoop fs -chown root /user
+  #hdfs dfs -mkdir /user/demo
+  #sudo -u hdfs hadoop fs -chown root /user/demo
+  #hdfs dfs -put /root/cdac.txt /user/demo
+  #hdfs dfs -ls /user/demo
+  #hive
+
+0: jdbc:hive2://master:2181/default> create external table hpc2 (id int, name string, city string,salary bigint) row format delimited fields terminated by '\t' location '/user/demo';
+
++----------+------------+----------------+--------------+
+| hpc2.id  | hpc2.name  |   hpc2.city    | hpc2.salary  |
++----------+------------+----------------+--------------+
+| 1        | akshay     | Pune           | 1000000000   |
+| 2        | shiv       | sambhajinagar  | 10000000     |
++----------+------------+----------------+--------------+
